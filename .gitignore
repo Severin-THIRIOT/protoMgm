@@ -1,0 +1,35 @@
+#VueJs/webpack files to ignore
+
+app_client_mgm_vuejs/.DS_Store
+app_client_mgm_vuejs/node_modules/
+app_client_mgm_vuejs/dist/
+app_client_mgm_vuejs/npm-debug.log*
+app_client_mgm_vuejs/yarn-debug.log*
+app_client_mgm_vuejs/yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+
+api_mgm_symfony/.web-server-pid
+api_mgm_symfony/app/config/parameters.yml
+api_mgm_symfony/build/
+api_mgm_symfony/phpunit.xml
+api_mgm_symfony/var/*
+!api_mgm_symfony/var/cache
+api_mgm_symfony/var/cache/*
+!api_mgm_symfony/var/cache/.gitkeep
+!api_mgm_symfony/var/logs
+api_mgm_symfony/var/logs/*
+!api_mgm_symfony/var/logs/.gitkeep
+!api_mgm_symfony/var/sessions
+api_mgm_symfony/var/sessions/*
+!api_mgm_symfony/var/sessions/.gitkeep
+!api_mgm_symfony/var/SymfonyRequirements.php
+api_mgm_symfony/vendor/
+api_mgm_symfony/web/bundles/
