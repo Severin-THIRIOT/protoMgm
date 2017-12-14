@@ -63,6 +63,7 @@
 
 
 <script>
+    import Logout from '../elements/Logout.vue'
   export default {
     props: [ 'id' ],
     data () {

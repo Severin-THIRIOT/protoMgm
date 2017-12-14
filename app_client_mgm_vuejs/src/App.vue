@@ -5,7 +5,7 @@
         <nav class="level">
           <div class="level-left">
             <div class="level-item has-text-centered">
-              <h1 class="title">MGM</h1>
+              <h1 class="title"><a @click="redirect('/')">MGM</a></h1>
             </div>
           </div>
           <div class="level-right">
@@ -30,10 +30,15 @@
 </template>
 
 <script>
-  import Logout from './components/Logout.vue'
+  import Logout from './components/elements/Logout.vue'
   export default {
     name: 'app',
-    components: { Logout }
+    components: { Logout },
+    methods: {
+      redirect: function (route) {
+        this.$router.push(route)
+      }
+    }
   }
 </script>
 

@@ -18,7 +18,7 @@
             <div class="level-right">
                 <div class="level-item">
                     <button class="button is-link" @click="addItem()">Créer un nouvel item</button>
-                    <a @click="redirect('addParams')">Ajouter des pramettres</a>
+                    <a id="settingsIcon" @click="redirect('addParams')"><img src="../assets/settings.png" alt="parametres" height="45" width="45"></a>
                 </div>
             </div>
         </div>
@@ -258,3 +258,9 @@
       }
     }
 </script>
+
+<style type="text/css">
+    #settingsIcon{
+        margin-left:5%;
+    }
+</style>
