@@ -86,7 +86,7 @@
           console.log(this.newParams[1])
           console.log(this.newParams[2])
           let url = 'http://localhost:8000/updateItem'
-          this.$http.post(url, {
+          this.$http.put(url, {
             username: this.user.username,
             password: this.user.userpw,
             userid: this.user.userid,

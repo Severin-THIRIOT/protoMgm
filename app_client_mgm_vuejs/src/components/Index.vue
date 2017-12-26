@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import List from './elements/List.vue'
+    import List from './containers/List.vue'
     export default {
       components: {
         List

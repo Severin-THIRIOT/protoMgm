@@ -42,7 +42,7 @@
       methods: {
         editList: function () {
           let url = 'http://localhost:8000/updateList'
-          this.$http.post(url, {
+          this.$http.put(url, {
             username: this.user.username,
             password: this.user.userpw,
             userid: this.user.userid,

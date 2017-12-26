@@ -28,7 +28,6 @@ class DefaultController extends FOSRestController
      */
     public function createUserAction(Request $request, CredentialsCheck $credentialsCheck)
     {
-        //TODO formulaire d'inscription aura plus de champs a récuperer
 
         $email = $request->get('email');
         $username = $request->get('username');
@@ -55,7 +54,13 @@ class DefaultController extends FOSRestController
 
 
             $response = new JsonResponse();
-            $response->setData(json_encode(array("result"=>"success", "userid"=> $user->getId(), "username"=>$user->getUsername(),"useremail"=> $user->getEmail(),"userpw"=>$password, "sessionStoarge"=>true)));
+            $response->setData(json_encode(array(
+                "result"=>"success",
+                "userid"=> $user->getId(),
+                "username"=>$user->getUsername(),
+                "useremail"=> $user->getEmail(),
+                "userpw"=>$password,
+                "sessionStoarge"=>true)));
             return $response;
         }
     }
@@ -234,7 +239,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/updateList")
+     * @Rest\Put("/updateList")
      */
     public function updateList(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -286,7 +291,7 @@ class DefaultController extends FOSRestController
 
 
     /**
-     * @Rest\Post("/deleteList")
+     * @Rest\Delete("/deleteList")
      */
     public function deleteExistingList(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -327,7 +332,6 @@ class DefaultController extends FOSRestController
      */
     public function addItemTolist(Request $request, CredentialsCheck $credentialsCheck)
     {
-        //TODO ajouter la possibilité d'update
 
         $username = $request->get('username');
         $password = $request->get('password');
@@ -438,7 +442,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/updateItem")
+     * @Rest\Put("/updateItem")
      */
     public function updateItem(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -541,7 +545,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/deleteItem")
+     * @Rest\Delete("/deleteItem")
      */
     public function deleteItemInlist(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -575,7 +579,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/completed")
+     * @Rest\Put("/completed")
      */
     public function itemComplted(Request $request, CredentialsCheck $credentialsCheck)
     {

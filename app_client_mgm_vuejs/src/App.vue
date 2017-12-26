@@ -16,7 +16,9 @@
         </nav>
       </div>
     </section>
-    <router-view/>
+    <div id="content">
+      <router-view/>
+    </div>
     <footer class="footer">
       <div class="container">
         <div class="content has-text-centered">
@@ -30,7 +32,7 @@
 </template>
 
 <script>
-  import Logout from './components/elements/Logout.vue'
+  import Logout from './components/elements/buttons/Logout.vue'
   export default {
     name: 'app',
     components: { Logout },
@@ -65,6 +67,9 @@ body {
   margin: 0;
   padding-bottom: 6rem;
   min-height: 100%;
+}
+#content {
+ margin: 10px;
 }
 
 

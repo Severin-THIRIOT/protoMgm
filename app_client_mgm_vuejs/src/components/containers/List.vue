@@ -6,7 +6,7 @@
                     <link-element :list="list" :key="index"></link-element>
                 </div>
                 <div class="level-right">
-                    <button-edit :listId="list.id"></button-edit>
+                    <button-edit :id="list.id" @edit-action="editList"></button-edit>
                     <button-delete :stuffToDeleteId="list.id" :index="index" @delete-action="showDeleteAlert"></button-delete>
                 </div>
             </li>
@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import LinkElement from './LinkElement.vue'
-import ButtonEdit from './ButtonEdit.vue'
-import ButtonDelete from './ButtonDelete.vue'
-import Alert from './DeleteAlert.vue'
+import LinkElement from '../elements/contentComponents/LinkElement.vue'
+import ButtonEdit from '../elements/buttons/ButtonEdit.vue'
+import ButtonDelete from '../elements/buttons/ButtonDelete.vue'
+import Alert from '../elements/alerts/DeleteAlert.vue'
 
 export default {
   data () {
@@ -39,6 +39,9 @@ export default {
     Alert
   },
   methods: {
+    editList: function (id) {
+      this.$router.push('/editList/' + id)
+    },
     showDeleteAlert: function (id, index) {
       this.alert = true
       this.listToDeleteId = id
@@ -51,7 +54,7 @@ export default {
     },
     confirmRemoveList: function () {
       let url = 'http://localhost:8000/deleteList'
-      this.$http.post(url, {username: this.user.username, password: this.user.userpw, itemListId: this.listToDeleteId}).then((response) => {
+      this.$http.delete(url, {username: this.user.username, password: this.user.userpw, itemListId: this.listToDeleteId}).then((response) => {
         if (JSON.parse(response.body).result === 'success') {
           this.lists.splice(this.listToDeleteIndex, 1)
           this.closeAlert()
