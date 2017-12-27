@@ -103,7 +103,7 @@
           console.log(this.dateB)
           console.log(this.dateE)
 
-          let url = 'http://localhost:8000/addParams'
+          let url = 'http://localhost:8000/api/addParams'
           this.$http.post(url, {
             username: this.user.username,
             password: this.user.userpw,
@@ -137,7 +137,7 @@
       },
       mounted: function () {
         let reqParams = '?username=' + this.user.username + '&password=' + this.user.userpw + '&listId=' + this.listId
-        let url = 'http://localhost:8000/getParams'
+        let url = 'http://localhost:8000/api/getParams'
         this.$http.get(url + reqParams).then((response) => {
           this.paramsList = JSON.parse(JSON.parse(response.body).params)
         }, (response) => {

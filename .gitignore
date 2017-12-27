@@ -33,3 +33,4 @@ api_mgm_symfony/var/sessions/*
 !api_mgm_symfony/var/SymfonyRequirements.php
 api_mgm_symfony/vendor/
 api_mgm_symfony/web/bundles/
+api_mgm_symfony/web/uploads/

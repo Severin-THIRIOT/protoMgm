@@ -38,7 +38,7 @@ export default {
   methods: {
     getFilters: function () {
       let reqParams = '?username=' + this.user.username + '&password=' + this.user.userpw + '&listId=' + this.id
-      let url = 'http://localhost:8000/getParams'
+      let url = 'http://localhost:8000/api/getParams'
       this.$http.get(url + reqParams).then((response) => {
         let params = JSON.parse(JSON.parse(response.body).params)
         params = this.transformDate(params)
@@ -49,17 +49,17 @@ export default {
     },
     transformDate: function (params) {
       let self = this
-       params.forEach( function (param) {
-        if (param.type === "date") {
-           param.paramsTypeDate = self.getDatesToFormat(param.paramsTypeDate)
+      params.forEach(function (param) {
+        if (param.type === 'date') {
+          param.paramsTypeDate = self.getDatesToFormat(param.paramsTypeDate)
         }
       })
       return params
     },
     getDatesToFormat: function (paramsTypeDate) {
       let self = this
-       paramsTypeDate.forEach( function (date) {
-         date.dateValue = self.formatDateToString(date.dateValue)
+      paramsTypeDate.forEach(function (date) {
+        date.dateValue = self.formatDateToString(date.dateValue)
       })
       return paramsTypeDate
     },
@@ -70,11 +70,11 @@ export default {
         'Avr', 'Mai', 'Jun', 'Jul',
         'Aou', 'Sep', 'Oct',
         'Nov', 'Déc'
-      ];
+      ]
       let newDate = new Date(date.date)
-      let day = newDate.getDate();
-      let monthIndex = newDate.getMonth();
-      let year = newDate.getFullYear();
+      let day = newDate.getDate()
+      let monthIndex = newDate.getMonth()
+      let year = newDate.getFullYear()
 
       date.display = day + ' ' + monthNames[monthIndex] + ' ' + year
       return date

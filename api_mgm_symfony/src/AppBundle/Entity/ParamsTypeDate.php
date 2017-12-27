@@ -36,7 +36,7 @@ class ParamsTypeDate
 
     /**
      * @ManyToOne(targetEntity="Param" , inversedBy="paramsTypeDate")
-     * @JoinColumn(name="Param_id", referencedColumnName="id")
+     * @JoinColumn(name="Param_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $Param;
 

@@ -53,8 +53,9 @@ export default {
       this.listToDeleteIndex = ''
     },
     confirmRemoveList: function () {
-      let url = 'http://localhost:8000/deleteList'
-      this.$http.delete(url, {username: this.user.username, password: this.user.userpw, itemListId: this.listToDeleteId}).then((response) => {
+      let url = 'http://localhost:8000/api/deleteList'
+      let param = '?username=' + this.user.username + '&password=' + this.user.userpw + '&itemListId=' + this.listToDeleteId
+      this.$http.delete(url + param).then((response) => {
         if (JSON.parse(response.body).result === 'success') {
           this.lists.splice(this.listToDeleteIndex, 1)
           this.closeAlert()
@@ -66,7 +67,7 @@ export default {
   },
   mounted: function () {
     let params = '?username=' + this.user.username + '&password=' + this.user.userpw + '&userid=' + this.user.userid
-    let url = 'http://localhost:8000/itemsListByUser'
+    let url = 'http://localhost:8000/api/itemsListByUser'
     this.$http.get(url + params).then((response) => {
       console.log(JSON.parse(JSON.parse(response.body).list))
       this.lists = JSON.parse(JSON.parse(response.body).list)

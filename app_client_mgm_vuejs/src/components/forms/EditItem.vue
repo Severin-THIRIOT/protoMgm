@@ -12,12 +12,15 @@
                 </div>
 
                 <div class="control">
-                    <label class="label" >Image</label>
-                    <input class="input" type="text" v-model="img">
+                    <div v-if="!image">
+                        <h2>Select an image</h2>
+                        <input type="file" @change="onFileChange">
+                    </div>
+                    <div v-else>
+                        <img :src="image" />
+                        <button @click="removeImage">Remove image</button>
+                    </div>
                 </div>
-
-                <!--<label>Date</label>-->
-                <!--<input type="date" v-model="date">-->
 
                 <div class="control">
                     <label class="label">Description</label>
@@ -71,32 +74,50 @@
           alert: false,
           alertMesage: '',
           name: '',
-          img: '',
+          image: '',
+          imageFile: '',
           description: '',
           price: 0,
           item: '',
+          url: 'http://localhost:8000/',
           paramsList: [],
           newParams: [],
           defaultParamsValue: []
         }
       },
       methods: {
+        onFileChange: function (e) {
+          let files = e.target.files || e.dataTransfer.files
+          if (!files.length) {
+            return
+          }
+          this.createImage(files[0])
+        },
+        createImage: function (file) {
+          let reader = new FileReader()
+          let vm = this
+          reader.onload = (e) => {
+            vm.image = e.target.result
+          }
+          this.imageFile = file
+          reader.readAsDataURL(file)
+        },
+        removeImage: function (e) {
+          this.image = ''
+        },
         editItem: function () {
-          console.log(this.newParams[0])
-          console.log(this.newParams[1])
-          console.log(this.newParams[2])
-          let url = 'http://localhost:8000/updateItem'
-          this.$http.put(url, {
-            username: this.user.username,
-            password: this.user.userpw,
-            userid: this.user.userid,
-            itemname: this.name,
-            itemimg: this.img,
-            itemId: this.id,
-            description: this.description,
-            price: this.price,
-            newParams: JSON.stringify(this.newParams)
-          }).then((response) => {
+          let formData = new FormData()
+          formData.append('username', this.user.username)
+          formData.append('password', this.user.userpw)
+          formData.append('userid', this.user.userid)
+          formData.append('itemname', this.name)
+          formData.append('itemimg', this.imageFile)
+          formData.append('itemId', this.id)
+          formData.append('description', this.description)
+          formData.append('price', this.price)
+          formData.append('newParams', JSON.stringify(this.newParams))
+          let url = this.url + 'api/updateItem'
+          this.$http.post(url, formData).then((response) => {
             console.log(response)
             if (JSON.parse(response.body).result === 'success') {
 //              this.$router.push('/items/' + this.listId)
@@ -111,7 +132,7 @@
         },
         getParamsByListId: function () {
           let reqParams = '?username=' + this.user.username + '&password=' + this.user.userpw + '&listId=' + this.listId
-          let url = 'http://localhost:8000/getParams'
+          let url = 'http://localhost:8000/api/getParams'
           this.$http.get(url + reqParams).then((response) => {
             console.log(JSON.parse(JSON.parse(response.body).params))
             this.paramsList = JSON.parse(JSON.parse(response.body).params)
@@ -155,13 +176,13 @@
         }
       },
       mounted: function () {
-        let url = 'http://localhost:8000/itemById'
+        let url = 'http://localhost:8000/api/itemById'
         let params = '?username=' + this.user.username + '&password=' + this.user.userpw + '&itemid=' + this.id
         this.$http.get(url + params).then((response) => {
           if (JSON.parse(response.body).result === 'success') {
             this.item = JSON.parse(JSON.parse(response.body).item)
             this.name = this.item[0].name
-            this.img = this.item[0].img
+            this.image = this.url + 'uploads/files/images/' + this.item[0].img
             this.description = this.item[0].description
             this.price = Number(this.item[0].price)
             this.getParamsByListId()

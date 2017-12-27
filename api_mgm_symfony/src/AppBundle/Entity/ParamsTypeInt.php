@@ -35,7 +35,7 @@ class ParamsTypeInt
 
     /**
      * @ManyToOne(targetEntity="Param", inversedBy="paramsTypeInt")
-     * @JoinColumn(name="Param_id", referencedColumnName="id")
+     * @JoinColumn(name="Param_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $Param;
 

@@ -95,7 +95,7 @@
       },
       methods: {
         login: function () {
-          this.$http.post('http://localhost:8000/connect', { username: this.username, password: this.password }).then((response) => {
+          this.$http.post('http://localhost:8000/api/connect', { username: this.username, password: this.password }).then((response) => {
             let receivedData = response.body
             console.log(JSON.parse(receivedData))
             if (JSON.parse(receivedData).result === 'success') {
@@ -115,7 +115,7 @@
             this.alertMessage = 'Les 2 passwords sont différents'
             this.alert = true
           } else {
-            this.$http.post('http://localhost:8000/create', { username: this.username, password: this.password, email: this.email }).then((response) => {
+            this.$http.post('http://localhost:8000/api/create', { username: this.username, password: this.password, email: this.email }).then((response) => {
               let receivedData = response.body
               console.log(JSON.parse(receivedData).result)
               if (JSON.parse(receivedData).result === 'success') {

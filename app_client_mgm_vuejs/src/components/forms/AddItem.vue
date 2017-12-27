@@ -13,12 +13,15 @@
                 </div>
 
                 <div class="control">
-                    <label class="label" >Image</label>
-                    <input class="input" type="text" v-model="img">
+                    <div v-if="!image">
+                        <h2>Select an image</h2>
+                        <input type="file" @change="onFileChange">
+                    </div>
+                    <div v-else>
+                        <img :src="image" />
+                        <button @click="removeImage">Remove image</button>
+                    </div>
                 </div>
-
-                <!--<label>Date</label>-->
-                <!--<input type="date" v-model="date">-->
 
                 <div class="control">
                     <label class="label">Description</label>
@@ -71,7 +74,8 @@
         alert: false,
         alertMesage: '',
         name: '',
-        img: '',
+        image: '',
+        imageFile: '',
         description: '',
         prix: 0,
         paramsList: [],
@@ -79,20 +83,38 @@
       }
     },
     methods: {
+      onFileChange: function (e) {
+        let files = e.target.files || e.dataTransfer.files
+        if (!files.length) {
+          return
+        }
+        this.createImage(files[0])
+      },
+      createImage: function (file) {
+        let reader = new FileReader()
+        let vm = this
+        reader.onload = (e) => {
+          vm.image = e.target.result
+        }
+        this.imageFile = file
+        reader.readAsDataURL(file)
+      },
+      removeImage: function (e) {
+        this.image = ''
+      },
       addItem: function () {
-        console.log(this.newParams[0])
-        let url = 'http://localhost:8000/addItem'
-        this.$http.post(url, {
-          username: this.user.username,
-          password: this.user.userpw,
-          userid: this.user.userid,
-          itemname: this.name,
-          itemimg: this.img,
-          itemListId: this.id,
-          description: this.description,
-          price: this.prix,
-          newParams: JSON.stringify(this.newParams)
-        }).then((response) => {
+        let formData = new FormData()
+        formData.append('username', this.user.username)
+        formData.append('password', this.user.userpw)
+        formData.append('userid', this.user.userid)
+        formData.append('itemname', this.name)
+        formData.append('itemimg', this.imageFile)
+        formData.append('itemListId', this.id)
+        formData.append('description', this.description)
+        formData.append('price', this.price)
+        formData.append('newParams', JSON.stringify(this.newParams))
+        let url = 'http://localhost:8000/api/addItem'
+        this.$http.post(url, formData).then((response) => {
           console.log(response.body)
           if (JSON.parse(response.body).result === 'success') {
             this.$router.push('/items/' + this.id)
@@ -107,7 +129,7 @@
       },
       getParamsByListId: function () {
         let reqParams = '?username=' + this.user.username + '&password=' + this.user.userpw + '&listId=' + this.id
-        let url = 'http://localhost:8000/getParams'
+        let url = 'http://localhost:8000/api/getParams'
         this.$http.get(url + reqParams).then((response) => {
           console.log(JSON.parse(JSON.parse(response.body).params))
           this.paramsList = JSON.parse(JSON.parse(response.body).params)

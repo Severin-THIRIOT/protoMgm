@@ -36,7 +36,7 @@ class ParamsTypeChoice
 
     /**
      * @ManyToOne(targetEntity="Param", inversedBy="paramsTypeChoice")
-     * @JoinColumn(name="Param_id", referencedColumnName="id")
+     * @JoinColumn(name="Param_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $Param;
 

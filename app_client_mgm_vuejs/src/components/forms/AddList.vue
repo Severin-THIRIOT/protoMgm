@@ -8,12 +8,16 @@
                     <input class="input" type="text" v-model="name">
                 </div>
                 <!--todo importer image depuis les fichiers locaux-->
-                <label class="label">Image</label>
                 <div class="control">
-                    <input class="input" type="text" v-model="img">
+                    <div v-if="!image">
+                        <h2>Select an image</h2>
+                        <input type="file" @change="onFileChange">
+                    </div>
+                    <div v-else>
+                        <img :src="image" />
+                        <button @click="removeImage">Remove image</button>
+                    </div>
                 </div>
-                <!--<label>Date</label>-->
-                <!--<input type="date" v-model="img">-->
                 <br>
                 <div class="control">
                     <button class="button is-primary" @click="addList()">Ajouter</button>
@@ -37,19 +41,40 @@
           alertMesage: '',
           user: JSON.parse(sessionStorage.getItem('user')),
           name: '',
-          img: ''
+          image: '',
+          imageFile: ''
         }
       },
       methods: {
+        onFileChange: function (e) {
+          let files = e.target.files || e.dataTransfer.files
+          if (!files.length) {
+            return
+          }
+          this.createImage(files[0])
+        },
+        createImage: function (file) {
+          let reader = new FileReader()
+          let vm = this
+          reader.onload = (e) => {
+            vm.image = e.target.result
+          }
+          this.imageFile = file
+          reader.readAsDataURL(file)
+        },
+        removeImage: function (e) {
+          this.image = ''
+        },
         addList: function () {
-          let url = 'http://localhost:8000/createList'
-          this.$http.post(url, {
-            username: this.user.username,
-            password: this.user.userpw,
-            userid: this.user.userid,
-            listname: this.name,
-            listimg: this.img
-          }).then((response) => {
+          let formData = new FormData()
+          formData.append('username', this.user.username)
+          formData.append('password', this.user.userpw)
+          formData.append('userid', this.user.userid)
+          formData.append('itemListId', this.id)
+          formData.append('listname', this.name)
+          formData.append('listimg', this.imageFile)
+          let url = 'http://localhost:8000/api/createList'
+          this.$http.post(url, formData).then((response) => {
             console.log(response)
             if (JSON.parse(response.body).result === 'success') {
               this.$router.push('/')

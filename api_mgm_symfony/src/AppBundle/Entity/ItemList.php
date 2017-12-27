@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
 use AppBundle\Entity\User;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ItemList
@@ -39,9 +41,16 @@ class ItemList
     private $date;
 
     /**
-     * @var string
      *
-     * @ORM\Column(name="img", type="string", length=255)
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(message="File should not be blank.")
+     * @Assert\File(
+     *     mimeTypes={"image/jpeg", "image/png", "image/gif"},
+     *     maxSize="1074000000"
+     * )
+     *
+     * @var UploadedFile
      */
     private $img;
 

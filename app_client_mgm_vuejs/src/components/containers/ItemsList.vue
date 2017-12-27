@@ -81,7 +81,7 @@ export default {
       this.itemToDeleteIndex = ''
     },
     confirmRemoveItem: function () {
-      let url = 'http://localhost:8000/deleteItem'
+      let url = 'http://localhost:8000/api/deleteItem'
       this.$http.delete(url, {username: this.user.username, password: this.user.userpw, itemId: this.itemToDeleteId}).then((response) => {
         if (JSON.parse(response.body).result === 'success') {
           this.items.splice(this.itemToDeleteIndex, 1)
@@ -92,7 +92,7 @@ export default {
       })
     },
     completed: function (item) {
-      let url = 'http://localhost:8000/completed'
+      let url = 'http://localhost:8000/api/completed'
       this.$http.put(url, {username: this.user.username, password: this.user.userpw, itemId: item.id}).then((response) => {
         this.setCompletionPercent()
       }, (response) => {
@@ -163,7 +163,7 @@ export default {
   },
   mounted: function () {
     let params = '?username=' + this.user.username + '&password=' + this.user.userpw + '&userid=' + this.user.userid + '&listid=' + this.id
-    let url = 'http://localhost:8000/itemsByList'
+    let url = 'http://localhost:8000/api/itemsByList'
     this.$http.get(url + params).then((response) => {
 //            console.log(JSON.parse(JSON.parse(response.body).items))
       this.items = JSON.parse(JSON.parse(response.body).items)

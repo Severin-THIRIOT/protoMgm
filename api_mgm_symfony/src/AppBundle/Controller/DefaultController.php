@@ -24,7 +24,7 @@ class DefaultController extends FOSRestController
 
 
     /**
-     * @Rest\Post("/create")
+     * @Rest\Post("api/create")
      */
     public function createUserAction(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -66,7 +66,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Post("/connect")
+     * @Rest\Post("api/connect")
      */
     public function authenticateUserAction(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -97,7 +97,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/itemsListByUser")
+     * @Rest\Get("api/itemsListByUser")
      */
     public function findItemListByUser(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -127,7 +127,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/itemsByList")
+     * @Rest\Get("api/itemsByList")
      */
     public function findItemsByList(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -158,7 +158,7 @@ class DefaultController extends FOSRestController
 
     }
     /**
-     * @Rest\Get("/listById")
+     * @Rest\Get("api/listById")
      */
     public function getListById(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -190,25 +190,20 @@ class DefaultController extends FOSRestController
 
     }
     /**
-     * @Rest\Post("/createList")
+     * @Rest\Post("api/createList")
      */
     public function createNewList(Request $request, CredentialsCheck $credentialsCheck)
     {
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
+        $listname = $request->request->get('listname');
 
-        $username = $request->get('username');
-        $password = $request->get('password');
-        $userid = $request->get('userid');
-        $listname = $request->get('listname');
-
-        if($request->get('listimg') === ""){
-            $listimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-        else if($request->get('listimg') !== "" && @getimagesize($request->get('listimg'))){
-            $listimg = $request->get('listimg');
-        }
-        else{
-            $listimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
+        $file = $request->files->get('listimg');
+        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move(
+            $this->getParameter('files_directory'),
+            $fileName
+        );
 
         $user = $credentialsCheck->checkLogin($username);
 
@@ -221,7 +216,7 @@ class DefaultController extends FOSRestController
                 $newList = new ItemList();
                 $newList->setName($listname);
                 $newList->setDate(new \DateTime());
-                $newList->setImg($listimg);
+                $newList->setImg($fileName);
                 $newList->setUser($user);
 
                 $db->persist($newList);
@@ -239,27 +234,22 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Put("/updateList")
+     * @Rest\Post("api/updateList")
      */
     public function updateList(Request $request, CredentialsCheck $credentialsCheck)
     {
-        //TODO ajouter la possibilité d'update
 
-        $username = $request->get('username');
-        $password = $request->get('password');
-        $listname = $request->get('listname');
-        $listid = $request->get('itemListId');
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
+        $listname = $request->request->get('listname');
+        $listid = $request->request->get('itemListId');
 
-        if($request->get('listimg') === ""){
-            $listimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-        else if($request->get('listimg') !== "" && @getimagesize($request->get('listimg'))){
-            $listimg = $request->get('listimg');
-        }
-        else{
-            $listimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-
+        $file = $request->files->get('listimg');
+        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move(
+            $this->getParameter('files_directory'),
+            $fileName
+        );
         $user = $credentialsCheck->checkLogin($username);
 
 
@@ -271,8 +261,7 @@ class DefaultController extends FOSRestController
                 $list = $db->getRepository('AppBundle:ItemList')->findOneById($listid);
 
                 $list->setName($listname);
-//                $list->setDate(new \DateTime());
-                $list->setImg($listimg);
+                $list->setImg($fileName);
                 $list->setUser($user);
 
                 $db->persist($list);
@@ -281,17 +270,17 @@ class DefaultController extends FOSRestController
                 return new jsonResponse(json_encode(array("result"=>"success")));
             }
             else{
-                return new jsonResponse(json_encode(array("result"=>"failure1")));
+                return new jsonResponse(json_encode(array("result"=>"failure")));
             }
         }
         else{
-            return new jsonResponse(json_encode(array("result"=>"failure2")));
+            return new jsonResponse(json_encode(array("result"=>"failure")));
         }
     }
 
 
     /**
-     * @Rest\Delete("/deleteList")
+     * @Rest\Delete("api/deleteList")
      */
     public function deleteExistingList(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -328,31 +317,24 @@ class DefaultController extends FOSRestController
 
 
     /**
-     * @Rest\Post("/addItem")
+     * @Rest\Post("api/addItem")
      */
     public function addItemTolist(Request $request, CredentialsCheck $credentialsCheck)
     {
 
-        $username = $request->get('username');
-        $password = $request->get('password');
-        $userid = $request->get('userid');
-        $itemname = $request->get('itemname');
-        $itemDescription = $request->get('description');
-        $itemPrice = $request->get('price');
-        $itemListId = $request->get('itemListId');
-        $params = json_decode($request->get('newParams'));
-
-
-        if($request->get('itemimg') === ""){
-            $itemimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-        else if($request->get('itemimg') !== "" && @getimagesize($request->get('itemimg'))){
-            $itemimg = $request->get('itemimg');
-        }
-        else{
-            $itemimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
+        $itemListId = $request->request->get('itemListId');
+        $itemname = $request->request->get('itemname');
+        $itemDescription = $request->request->get('description');
+        $itemPrice = $request->request->get('price');
+        $params = json_decode($request->request->get('newParams'));
+        $file = $request->files->get('itemimg');
+        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move(
+            $this->getParameter('files_directory'),
+            $fileName
+        );
         $user = $credentialsCheck->checkLogin($username);
 
         if($user) {
@@ -365,17 +347,14 @@ class DefaultController extends FOSRestController
                 $newItem = new Item();
                 $newItem->setName($itemname);
                 $newItem->setDate(new \DateTime());
-                $newItem->setImg($itemimg);
+                $newItem->setImg($fileName);
                 $newItem->setDescription($itemDescription);
                 $newItem->setPrice($itemPrice);
                 $newItem->setItemList($itemList);
                 $newItem->setCompleted(false);
 
-
                 foreach ($params as $index => $param) {
-
                     $paramParent = $db->getRepository('AppBundle:Param')->findOneById($param->id);
-
                     if ($param->type ===  "choice" && $param->value !== '') {
                         $paramTypeChoice = $db->getRepository('AppBundle:ParamsTypeChoice')->findOneById($param->value);
                         $newItem->addParamsTypeChoice($paramTypeChoice);
@@ -411,7 +390,7 @@ class DefaultController extends FOSRestController
 
 
     /**
-     * @Rest\Get("/itemById")
+     * @Rest\Get("api/itemById")
      */
     public function getItemById(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -442,27 +421,25 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Put("/updateItem")
+     * @Rest\Post("api/updateItem")
      */
     public function updateItem(Request $request, CredentialsCheck $credentialsCheck)
     {
-        $username = $request->get('username');
-        $password = $request->get('password');
-        $itemname = $request->get('itemname');
-        $itemDescription = $request->get('description');
-        $itemPrice = $request->get('price');
-        $itemId = $request->get('itemId');
-        $params = json_decode($request->get('newParams'));
 
-        if($request->get('itemimg') === ""){
-            $itemimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
-        else if($request->get('itemimg') !== "" && @getimagesize($request->get('itemimg'))){
-            $itemimg = $request->get('itemimg');
-        }
-        else{
-            $itemimg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9YUJjbPRWbrIxXZ4DwTwM-9xu0P026EN_Fp_FEBAwG6nOh7kD";
-        }
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
+        $itemname = $request->request->get('itemname');
+        $itemDescription = $request->request->get('description');
+        $itemPrice = $request->request->get('price');
+        $itemId = $request->request->get('itemId');
+        $params = json_decode($request->request->get('newParams'));
+
+        $file = $request->files->get('itemimg');
+        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $file->move(
+            $this->getParameter('files_directory'),
+            $fileName
+        );
 
         $user = $credentialsCheck->checkLogin($username);
 
@@ -475,7 +452,7 @@ class DefaultController extends FOSRestController
                 $item = $db->getRepository('AppBundle:Item')->findOneById($itemId);
                 $item->setName($itemname);
 //                $item->setDate(new \DateTime());
-                $item->setImg($itemimg);
+                $item->setImg($fileName);
                 $item->setDescription($itemDescription);
                 $item->setPrice($itemPrice);
 
@@ -545,7 +522,7 @@ class DefaultController extends FOSRestController
     }
 
     /**
-     * @Rest\Delete("/deleteItem")
+     * @Rest\Delete("api/deleteItem")
      */
     public function deleteItemInlist(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -622,7 +599,7 @@ class DefaultController extends FOSRestController
         }
     }
     /**
-     * @Rest\Post("/addParams")
+     * @Rest\Post("api/addParams")
      */
     public function addParams(Request $request, CredentialsCheck $credentialsCheck)
     {
@@ -708,7 +685,7 @@ class DefaultController extends FOSRestController
         }
     }
     /**
-     * @Rest\Get("/getParams")
+     * @Rest\Get("api/getParams")
      */
     public function getParamsById(Request $request, CredentialsCheck $credentialsCheck)
     {

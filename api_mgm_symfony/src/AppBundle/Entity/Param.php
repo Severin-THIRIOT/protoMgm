@@ -71,26 +71,26 @@ class Param
 
     /**
      * @ManyToOne(targetEntity="ItemList")
-     * @JoinColumn(name="ItemList_id", referencedColumnName="id")
+     * @JoinColumn(name="ItemList_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $itemList;
 
 
     /**
      * @OneToMany(targetEntity="ParamsTypeChoice", mappedBy="Param")
-     * @JoinColumn(name="ParamsTypeChoice_id", referencedColumnName="id")
+     * @JoinColumn(name="ParamsTypeChoice_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $paramsTypeChoice;
 
     /**
      * @OneToMany(targetEntity="ParamsTypeInt", mappedBy="Param")
-     * @JoinColumn(name="ParamsTypeInt_id", referencedColumnName="id")
+     * @JoinColumn(name="ParamsTypeInt_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $paramsTypeInt;
 
     /**
      * @OneToMany(targetEntity="ParamsTypeDate", mappedBy="Param")
-     * @JoinColumn(name="ParamsTypeDate_id", referencedColumnName="id")
+     * @JoinColumn(name="ParamsTypeDate_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $paramsTypeDate;
 
